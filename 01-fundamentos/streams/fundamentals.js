@@ -8,7 +8,7 @@
 //   .pipe(process.stdout)
 
 // 10mb/s - 100s
-import { Readable } from 'node:stream'
+import { Readable, Transform, Writable } from 'node:stream'
 
 // 100s -> Inserção no banco de dados
 class OneToHundredStream extends Readable {
@@ -31,5 +31,22 @@ class OneToHundredStream extends Readable {
   }
 }
 
+
+class InverseNumberStream extends Transform {
+  _transform(chunk, encoding, callback) {
+    const transformed = Number(chunk.toString()) * -1
+
+    callback(null, Buffer.from(String(transformed)))
+  }
+}
+
+class multiplybytesStream extends Writable {
+  _write(chunk, encoding, callback) {
+    console.log(Number(chunk.toString()) * 10)
+    callback()
+  }
+}
+
 new OneToHundredStream()
-  .pipe(process.stdout)
+  .pipe(new InverseNumberStream())
+  .pipe(new multiplybytesStream())
