@@ -44,9 +44,11 @@ const server = http.createServer((req, res) => {
      email: 'victorcruz@example.com'
 
     })
+
+    return res.writeHead(201).end()
   }
 
-    return res.end('Teste')
+    return res.writeHead(404).end()
 })
 
 server.listen(3333)
